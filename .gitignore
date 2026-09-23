@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# manuscript & internal notes — not pushed
+paper/
+status.md

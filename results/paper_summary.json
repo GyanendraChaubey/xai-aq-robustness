@@ -1,0 +1,87 @@
+{
+  "search": {
+    "n_stations": 4,
+    "n_trials": 40,
+    "n_seeds": 2,
+    "cv_folds": 3,
+    "win_rate_vs_tpe": "4/4",
+    "win_rate_vs_random": "2/4",
+    "wilcoxon_vs_tpe_p": 0.125,
+    "wilcoxon_vs_random_p": 0.875,
+    "mean_hv_nsga2": 0.11333259752026943,
+    "mean_hv_random": 0.11340867062909535,
+    "mean_hv_tpe": 0.036118056541218566
+  },
+  "baselines_persistence_mcc": {
+    "Dongsi": 0.168,
+    "Huairou": 0.189,
+    "Wanshouxigong": 0.17,
+    "Dingling": 0.195
+  },
+  "delhi_persistence_mcc": 0.361,
+  "own_holdout_by_rule": {
+    "knee_point": {
+      "own_test_mcc": 0.195,
+      "own_test_phi": 0.259,
+      "phi_drop": -0.169,
+      "rank_stability_mean": 0.76
+    },
+    "max_mcc": {
+      "own_test_mcc": 0.224,
+      "own_test_phi": 0.1,
+      "phi_drop": 0.025,
+      "rank_stability_mean": 0.92
+    },
+    "max_phi": {
+      "own_test_mcc": 0.101,
+      "own_test_phi": 0.378,
+      "phi_drop": -0.014,
+      "rank_stability_mean": 0.8
+    }
+  },
+  "transfer_mcc_by_type_rule": {
+    "crosscity_transfer|knee_point": 0.078,
+    "crosscity_transfer|max_mcc": 0.178,
+    "crosscity_transfer|max_phi": 0.048,
+    "heldout_transfer|knee_point": 0.213,
+    "heldout_transfer|max_mcc": 0.282,
+    "heldout_transfer|max_phi": 0.173,
+    "primary_transfer|knee_point": 0.189,
+    "primary_transfer|max_mcc": 0.256,
+    "primary_transfer|max_phi": 0.149
+  },
+  "transfer_phi_by_type_rule": {
+    "crosscity_transfer|knee_point": 0.295,
+    "crosscity_transfer|max_mcc": 0.067,
+    "crosscity_transfer|max_phi": 0.369,
+    "heldout_transfer|knee_point": 0.241,
+    "heldout_transfer|max_mcc": 0.095,
+    "heldout_transfer|max_phi": 0.366,
+    "primary_transfer|knee_point": 0.249,
+    "primary_transfer|max_mcc": 0.102,
+    "primary_transfer|max_phi": 0.375
+  },
+  "explainer_type_effect": {
+    "kernel": {
+      "phi_drop_mean": -0.219,
+      "phi_drop_count": 3,
+      "rank_stability_mean_mean": 0.947,
+      "rank_stability_mean_count": 3
+    },
+    "tree": {
+      "phi_drop_mean": 0.003,
+      "phi_drop_count": 9,
+      "rank_stability_mean_mean": 0.787,
+      "rank_stability_mean_count": 9
+    }
+  },
+  "lowest_rank_stability_case": {
+    "source_station": "Dingling",
+    "rule": "knee_point",
+    "model_family": "lightgbm",
+    "rank_stability_mean": 0.1999999999999999
+  },
+  "dongsi_maxphi_mcc": 0.0482745733950641,
+  "dongsi_persistence_mcc": 0.1681312720053806,
+  "n_pareto_front_by_station": 4
+}

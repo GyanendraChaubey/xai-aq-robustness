@@ -1,0 +1,39 @@
+{
+  "n_stations": 4,
+  "wilcoxon_nsga2_vs_tpe": {
+    "statistic": 0.0,
+    "pvalue": 0.125
+  },
+  "wilcoxon_nsga2_vs_random": {
+    "statistic": 4.0,
+    "pvalue": 0.875
+  },
+  "win_rate_vs_tpe": "4/4",
+  "win_rate_vs_random": "2/4",
+  "station_means": [
+    {
+      "station": "Dingling",
+      "hv_nsga2": 0.13076827138379493,
+      "hv_random": 0.13103015175649807,
+      "hv_tpe": 0.035610731785390204
+    },
+    {
+      "station": "Dongsi",
+      "hv_nsga2": 0.10225017367459077,
+      "hv_random": 0.10277395709992074,
+      "hv_tpe": 0.031182523699143386
+    },
+    {
+      "station": "Huairou",
+      "hv_nsga2": 0.12379003383915968,
+      "hv_random": 0.12337425093054301,
+      "hv_tpe": 0.045763338915397675
+    },
+    {
+      "station": "Wanshouxigong",
+      "hv_nsga2": 0.09652191118353255,
+      "hv_random": 0.09645632272941974,
+      "hv_tpe": 0.03191563176494319
+    }
+  ]
+}
