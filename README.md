@@ -1,9 +1,7 @@
 # Faithfulness Is Not Robustness: Rethinking Explainable Model Selection for Air Quality Forecasting
 
 Code and experimental results for a two-objective explainable-AI model-selection
-benchmark, submitted to *Frontiers in Artificial Intelligence* (Machine Learning
-and Artificial Intelligence section), Research Topic "Explainable Machine
-Learning for Air Quality & Meteorological Prediction."
+benchmark for air quality forecasting.
 
 ## Abstract
 
@@ -58,7 +56,7 @@ figs/       all figures (PDF + PNG), including the methodology/framework
 ## Installation
 
 ```bash
-pip install -r requirements.txt   # optuna, shap, imbalanced-learn, xgboost, lightgbm, scikit-learn
+pip install optuna shap imbalanced-learn xgboost lightgbm scikit-learn pandas numpy scipy matplotlib
 ```
 
 ## Reproducing the Results
@@ -88,8 +86,7 @@ python src/make_figures.py
 
 ## Citation
 
-Citation details will be added once the manuscript is accepted and assigned
-a DOI.
+Citation details will be added once available.
 
 ## License
 
