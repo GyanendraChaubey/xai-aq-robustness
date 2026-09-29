@@ -173,7 +173,7 @@ def suggest_model(trial, n_classes, random_state=0):
 TREE_FAMILIES = {"dtree", "rforest", "extratrees", "xgboost", "lightgbm"}
 
 
-def get_shap_values(model, family, X_background, X_explain, n_classes):
+def get_shap_values(model, family, X_background, X_explain, n_classes, seed=0):
     if family in TREE_FAMILIES:
         explainer = shap.TreeExplainer(model)
         sv = explainer.shap_values(X_explain, check_additivity=False)
@@ -181,9 +181,19 @@ def get_shap_values(model, family, X_background, X_explain, n_classes):
         explainer = shap.LinearExplainer(model, X_background)
         sv = explainer.shap_values(X_explain)
     else:
+        # KernelExplainer (kNN, naive Bayes, MLP) is stochastic: shap.kmeans'
+        # background clustering and shap_values' own coalition sampling both
+        # draw on numpy's global RNG. Earlier drafts left this unseeded and
+        # ran it at nsamples=80, so the "clean" and "noisy" stress-test calls
+        # (which are two SEPARATE calls to this function) sampled different
+        # coalitions purely by chance -- a genuine confound flagged in
+        # pre-submission review. Explicitly reseeding per call and raising
+        # the budget to 300 fixes both: measurements are now reproducible,
+        # and the sampling approximation is tighter.
+        np.random.seed(seed)
         bg = shap.kmeans(X_background, min(25, len(X_background)))
         explainer = shap.KernelExplainer(model.predict_proba, bg)
-        sv = explainer.shap_values(X_explain, nsamples=80, silent=True)
+        sv = explainer.shap_values(X_explain, nsamples=300, silent=True)
 
     if isinstance(sv, list):
         return np.array(sv)
@@ -197,7 +207,7 @@ def get_shap_values(model, family, X_background, X_explain, n_classes):
     return np.stack([sv] * n_classes)
 
 
-def faithfulness(model, family, X_background, X_explain, k_steps=8, feature_groups=None):
+def faithfulness(model, family, X_background, X_explain, k_steps=8, feature_groups=None, seed=0):
     """Phi = InsertionAUC - DeletionAUC, per-instance on the predicted class.
     If feature_groups (dict[name] -> list[col idx]) is given, insertion/
     deletion operate on GROUPS of columns at a time (all-in or all-out),
@@ -209,7 +219,7 @@ def faithfulness(model, family, X_background, X_explain, k_steps=8, feature_grou
     target_cls = proba_full.argmax(axis=1)
     n_classes_local = proba_full.shape[1]
 
-    sv_all = get_shap_values(model, family, X_background, X_explain, n_classes_local)
+    sv_all = get_shap_values(model, family, X_background, X_explain, n_classes_local, seed=seed)
     sv = np.stack([sv_all[target_cls[i], i, :] for i in range(n)])
 
     if feature_groups is None:
@@ -288,7 +298,8 @@ def noise_stress_test(pipe, family, X_background_pre, X_explain_raw, feature_idx
 
     X_explain_pre = transform_through_pre(X_explain_raw)
     phi_clean, sv_clean, _ = faithfulness(fitted_model, family, X_background_pre, X_explain_pre,
-                                           k_steps=k_steps, feature_groups=feature_idx_by_group)
+                                           k_steps=k_steps, feature_groups=feature_idx_by_group,
+                                           seed=seed)
     units = list(feature_idx_by_group.values())
     clean_rank = -np.stack([np.abs(sv_clean[:, u]).sum(axis=1) for u in units], axis=1).mean(0)
     clean_order = np.argsort(clean_rank)
@@ -298,8 +309,13 @@ def noise_stress_test(pipe, family, X_background_pre, X_explain_raw, feature_idx
         Xn_raw = inject_sensor_noise(X_explain_raw, np.random.RandomState(seed * 100 + r),
                                       noisy_cols=sensor_cols)
         Xn_pre = transform_through_pre(Xn_raw)
+        # distinct explainer seed per replicate (offset from the noise-
+        # injection seed above and from phi_clean's seed) so KernelExplainer
+        # sampling variance is independent across replicates, not a repeat
+        # of the same coalition draw.
         phi_n, sv_n, _ = faithfulness(fitted_model, family, X_background_pre, Xn_pre,
-                                       k_steps=k_steps, feature_groups=feature_idx_by_group)
+                                       k_steps=k_steps, feature_groups=feature_idx_by_group,
+                                       seed=seed * 100 + r + 1)
         noisy_rank = -np.stack([np.abs(sv_n[:, u]).sum(axis=1) for u in units], axis=1).mean(0)
         noisy_order = np.argsort(noisy_rank)
         rho, _ = spearmanr(clean_order, noisy_order)

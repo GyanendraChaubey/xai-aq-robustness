@@ -64,6 +64,40 @@ def plot_pareto_front(station, seed=0):
     plt.close(fig)
 
 
+def plot_pareto_grid(stations, seed=0):
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 9), dpi=200)
+    handles, labels = [], []
+    for ax, station in zip(axes.flat, stations):
+        df = pd.read_csv(f"{RESULTS_DIR}/{station}_nsga2_seed{seed}.csv")
+        mask = pareto_mask(df[["mcc", "phi"]].values)
+        for fam in df["model_family"].unique():
+            sub = df[df["model_family"] == fam]
+            h = ax.scatter(sub["mcc"], sub["phi"], s=22, alpha=0.55,
+                            color=FAMILY_COLOR.get(fam, MUTED), marker=FAMILY_MARKER.get(fam, "o"),
+                            label=fam, linewidths=0, zorder=3)
+            if fam not in labels:
+                handles.append(h); labels.append(fam)
+        front = df[mask].sort_values("mcc")
+        ax.plot(front["mcc"], front["phi"], color=INK, linewidth=1.1, zorder=4, alpha=0.6)
+        h_front = ax.scatter(front["mcc"], front["phi"], s=70, facecolors="none",
+                              edgecolors=INK, linewidths=1.3, zorder=5, label="Pareto front")
+        if "Pareto front" not in labels:
+            handles.append(h_front); labels.append("Pareto front")
+
+        ax.set_xlabel("MCC", color=INK, fontsize=9)
+        ax.set_ylabel("Φ", color=INK, fontsize=9)
+        ax.set_title(station, color=INK, fontsize=10, loc="left")
+        _style_ax(ax)
+
+    fig.legend(handles, labels, fontsize=7.5, frameon=False, ncol=4, loc="lower center",
+               bbox_to_anchor=(0.5, 0.0))
+    fig.suptitle(f"NSGA-II Pareto fronts by station (seed {seed})", color=INK, fontsize=12, x=0.02, ha="left")
+    fig.tight_layout(rect=[0, 0.09, 1, 0.96])
+    fig.savefig(f"{FIGS_DIR}/pareto_front_grid.pdf")
+    fig.savefig(f"{FIGS_DIR}/pareto_front_grid.png")
+    plt.close(fig)
+
+
 def plot_hypervolume_comparison():
     df = pd.read_csv(f"{RESULTS_DIR}/hypervolume_by_station.csv")
     means = df.groupby("station")[["hv_nsga2", "hv_random", "hv_tpe"]].mean()
@@ -114,12 +148,13 @@ def plot_noise_stress():
         sub = own[own["rule"] == rule]
         ax.scatter(sub["source_station"], sub["rank_stability_mean"], s=70,
                    color=CAT_PALETTE[i % len(CAT_PALETTE)], label=rule, zorder=3)
-    ax.axhline(0.8, linestyle="--", color=MUTED, linewidth=1, zorder=2)
+    ax.axhline(0.8, linestyle="--", color=MUTED, linewidth=1, zorder=2, label="stability threshold (0.8)")
     ax.set_ylim(-0.1, 1.05)
     ax.set_ylabel("Rank stability (Spearman ρ, clean vs. noisy)", fontsize=9, color=INK)
     ax.set_title("Attribution rank stability under noise", fontsize=10, loc="left", color=INK)
     _style_ax(ax)
     ax.tick_params(axis="x", rotation=25)
+    ax.legend(fontsize=7, frameon=False, loc="lower right")
 
     fig.tight_layout()
     fig.savefig(f"{FIGS_DIR}/noise_stress.pdf")
@@ -162,6 +197,11 @@ if __name__ == "__main__":
                 print("OK pareto:", st)
             except Exception as e:
                 print("SKIP pareto", st, e)
+    if args.which in ("all", "pareto_grid"):
+        try:
+            plot_pareto_grid(stations); print("OK pareto grid")
+        except Exception as e:
+            print("SKIP pareto grid", e)
     if args.which in ("all", "hv"):
         try:
             plot_hypervolume_comparison(); print("OK hv comparison")

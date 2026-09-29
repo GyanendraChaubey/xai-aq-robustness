@@ -8,23 +8,23 @@
     "win_rate_vs_random": "2/4",
     "wilcoxon_vs_tpe_p": 0.125,
     "wilcoxon_vs_random_p": 0.875,
-    "mean_hv_nsga2": 0.11333259752026943,
-    "mean_hv_random": 0.11340867062909535,
-    "mean_hv_tpe": 0.036118056541218566
+    "mean_hv_nsga2": 0.11333259752026949,
+    "mean_hv_random": 0.11340867062909539,
+    "mean_hv_tpe": 0.036118056541218614
   },
   "baselines_persistence_mcc": {
-    "Dongsi": 0.168,
-    "Huairou": 0.189,
-    "Wanshouxigong": 0.17,
-    "Dingling": 0.195
+    "Dongsi": 0.1681312720053806,
+    "Huairou": 0.188514342001671,
+    "Wanshouxigong": 0.1701247232291621,
+    "Dingling": 0.1951419404552042
   },
   "delhi_persistence_mcc": 0.361,
   "own_holdout_by_rule": {
     "knee_point": {
       "own_test_mcc": 0.195,
-      "own_test_phi": 0.259,
-      "phi_drop": -0.169,
-      "rank_stability_mean": 0.76
+      "own_test_phi": 0.26,
+      "phi_drop": -0.164,
+      "rank_stability_mean": 0.48
     },
     "max_mcc": {
       "own_test_mcc": 0.224,
@@ -51,21 +51,21 @@
     "primary_transfer|max_phi": 0.149
   },
   "transfer_phi_by_type_rule": {
-    "crosscity_transfer|knee_point": 0.295,
+    "crosscity_transfer|knee_point": 0.312,
     "crosscity_transfer|max_mcc": 0.067,
     "crosscity_transfer|max_phi": 0.369,
-    "heldout_transfer|knee_point": 0.241,
+    "heldout_transfer|knee_point": 0.255,
     "heldout_transfer|max_mcc": 0.095,
     "heldout_transfer|max_phi": 0.366,
-    "primary_transfer|knee_point": 0.249,
+    "primary_transfer|knee_point": 0.263,
     "primary_transfer|max_mcc": 0.102,
     "primary_transfer|max_phi": 0.375
   },
   "explainer_type_effect": {
     "kernel": {
-      "phi_drop_mean": -0.219,
+      "phi_drop_mean": -0.213,
       "phi_drop_count": 3,
-      "rank_stability_mean_mean": 0.947,
+      "rank_stability_mean_mean": 0.573,
       "rank_stability_mean_count": 3
     },
     "tree": {
@@ -75,13 +75,26 @@
       "rank_stability_mean_count": 9
     }
   },
-  "lowest_rank_stability_case": {
-    "source_station": "Dingling",
-    "rule": "knee_point",
-    "model_family": "lightgbm",
-    "rank_stability_mean": 0.1999999999999999
-  },
+  "lowest_rank_stability_cases": [
+    {
+      "source_station": "Dongsi",
+      "rule": "knee_point",
+      "model_family": "mlp",
+      "rank_stability_mean": 0.1999999999999999
+    },
+    {
+      "source_station": "Dingling",
+      "rule": "knee_point",
+      "model_family": "lightgbm",
+      "rank_stability_mean": 0.1999999999999999
+    }
+  ],
   "dongsi_maxphi_mcc": 0.0482745733950641,
   "dongsi_persistence_mcc": 0.1681312720053806,
-  "n_pareto_front_by_station": 4
+  "n_pareto_front_by_station": 4,
+  "kernel_explainer_reseed_check": {
+    "note": "phi_drop_mean for kernel-explained models, before vs. after independently reseeding KernelExplainer per clean/noisy call and raising nsamples from 80 to 300.",
+    "before": -0.219,
+    "after": -0.213
+  }
 }

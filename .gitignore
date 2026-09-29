@@ -220,3 +220,10 @@ __marimo__/
 # manuscript & internal notes — not pushed
 paper/
 status.md
+
+# macOS junk
+.DS_Store
+
+# vendored Elsevier CAS LaTeX template (extracted for paper/, not repo source)
+els-cas-extract/
+els-cas-templates.zip

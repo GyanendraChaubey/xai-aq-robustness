@@ -75,8 +75,16 @@ python src/make_figures.py
 
 - **Beijing Multi-Site Air Quality** — UCI Machine Learning Repository,
   DOI [10.24432/C5RK5G](https://doi.org/10.24432/C5RK5G).
-- **Delhi/NCR CPCB station data** — source/license to be confirmed before
-  final submission.
+- **Delhi station data** — published by the Central Pollution Control Board
+  (CPCB), Ministry of Environment, Forest and Climate Change, Government of
+  India, via its [CCR portal](https://airquality.cpcb.gov.in/ccr/), for the
+  Alipur, Delhi station operated by DPCC. Accessed from the public GitHub repository
+  [avnish36singh-arch/delhi-air_qaulity_cpcb](https://github.com/avnish36singh-arch/delhi-air_qaulity_cpcb)
+  (MIT licence; snapshot commit `ab1d9e6`, 15 Sep 2026). Only
+  `data/raw/air_quality_2021.csv`–`air_quality_2023.csv` are used. The
+  station is identified in the author's companion portal
+  ([signal-earth-portal](https://github.com/avnish36singh-arch/signal-earth-portal),
+  `investigations/delhi.html`).
 
 ## Citation
 
